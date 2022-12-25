@@ -11,10 +11,10 @@ from IPython.display import display
 
 def main():
     path = os.getcwd()
-    path+= "\\Excel surveys"
+    path+= "\\Excel_surveys"
     csv_files = glob.glob(os.path.join(path, "*.xlsx"))
-    print(path)
-    print(csv_files)
+    #print(path)
+    #print(csv_files)
     
     
     for f in csv_files:

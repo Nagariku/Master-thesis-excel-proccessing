@@ -9,7 +9,7 @@ def getFiles():
     # Get the path of the current directory and add the folder name
     path = os.path.join(os.getcwd(), "Excel_surveys") ##doesn't work on excel other wise. This get directory from run to surveys
      # Get all the files in the folder
-    csv_files = glob.glob(os.path.join(path, "*.xlsm"))
+    csv_files = glob.glob(os.path.join(path, "*.xlsx"))
     # print(path)
     # print(csv_files)
     config_object = ConfigParser()
@@ -27,8 +27,8 @@ def getFiles():
         #print('File Name:', f.split("\\")[-1])
         
         # print the content
-        #print('Content:')
-        #display(df)
-        #print()
+        print('Content:')
+        display(df)
+        print()
 
     return

@@ -31,8 +31,8 @@ def getFiles():
         print('File Name:', f.split("\\")[-1])
         
         # print the content
-        #print('Content:')
-        #display(df)
-        #print()
+        print('Content:')
+        display(df)
+        print()
 
     return

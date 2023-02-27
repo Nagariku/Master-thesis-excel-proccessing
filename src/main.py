@@ -1,10 +1,11 @@
-from src.methods import calculations,reporting,validation
+#from methods import data_processing, data_import
+from src.methods import data_processing, data_import
 
 
 
 
 
 def main():
-    validation.getFiles()
+    data_import.getFiles()
     
     

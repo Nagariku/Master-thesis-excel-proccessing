@@ -6,6 +6,14 @@ import glob
 from IPython.display import display
 #import krippendorff
 
+
+#to be done by greg
+
+def get_config_files():
+    #to obtain rows used and other settings
+    return None
+
+
 def getFiles():
     # Get the path of the current directory and add the folder name
     path = os.path.join(os.getcwd(), "Excel_surveys") ##doesn't work on excel other wise. This get directory from run to surveys

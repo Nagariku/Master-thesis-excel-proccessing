@@ -1,6 +1,8 @@
 # Master thesis data processing
 ## in progress
 
+[![Python package](https://github.com/grigsos/Master-thesis-excel-proccessing/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/grigsos/Master-thesis-excel-proccessing/actions/workflows/main.yml)
+
 Group:
 Grigorii Osipov
 Jacques Tatossian

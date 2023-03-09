@@ -16,7 +16,7 @@ def get_config_files():
 
 def getFiles():
     # Get the path of the current directory and add the folder name
-    path = os.path.join(os.getcwd(), "Excel_surveys") ##doesn't work on excel other wise. This get directory from run to surveys
+    path = os.path.join(os.getcwd(), "Excel_surveys") ##doesn't work on linux other wise. This get directory from run to surveys
      # Get all the files in the folder
     csv_files = glob.glob(os.path.join(path, "*.xlsx"))
     # print(path)

@@ -1,11 +1,13 @@
 import logging
 import os
+import csv
+import datetime
 
 ##############Main function##############
 def main(mFP,cFM):
     logging.info("Report generation started")
     outFolderPath = check_output_folder(cFM.get("Settings", "outputFolder"),mFP)
-
+    make_csv(outFolderPath)
     logging.info("Report generation finished successfully")
 
 
@@ -28,3 +30,21 @@ def check_output_folder(folderName,pathFold): #check if excel survey folder exis
         os.mkdir(joinedOutputPath)
         logging.info("'" + folderName + "' folder created")
     return joinedOutputPath
+
+def make_header():
+    
+    return None
+
+def make_csv(oFP):
+    filepath = os.path.join(oFP, get_current_time() + " - " + get_num_participants() + " participant(s)"+  ".csv")
+    with open(filepath, "w", newline="") as file:
+        writer = csv.writer(file)
+    return None
+
+def get_num_participants():
+    #todo: get number of participants from the survey
+    return str(5)
+
+def get_current_time():
+    now = datetime.datetime.now()
+    return now.strftime('%Y-%m-%dT%H_%M_%S')

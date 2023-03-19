@@ -1,5 +1,6 @@
 import configparser ## to import config files
 import os
+from src.methods import initialisation
 
 config_file = "config.ini"
 config_object = configparser.ConfigParser()
@@ -10,7 +11,7 @@ def test_config_file_exists():
 
 def test_delete_excles_exists():
 
-    assert(config_object.get("Settings", "deleteExcels"),bool)
+    assert bool(config_object.get("Settings", "deleteExcels")) == True
 
 def test_numberOfDataSheets_is_posInt():
     n = int(config_object.get("Settings", "numberOfDataSheets"))
@@ -41,3 +42,6 @@ def test_input_folder_exists():
 
 def test_output_folder_exists():
     assert (config_object.get("Settings", "outputFolder"))
+
+def test_special_sheets_length():
+    assert (initialisation.check_special_worksheet_length(config_object)==True)

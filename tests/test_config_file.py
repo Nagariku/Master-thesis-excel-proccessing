@@ -45,3 +45,6 @@ def test_output_folder_exists():
 
 def test_special_sheets_length():
     assert (initialisation.check_special_worksheet_length(config_object)==True)
+
+def test_num_subcomponents():
+    assert len(eval(config_object.get("Settings", "numberOfSubComponents"))) ==int(config_object.get("Settings", "numberOfDataSheets"))

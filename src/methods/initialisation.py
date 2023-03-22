@@ -8,21 +8,17 @@ import hashlib # to get md5 hash of file
 import random
 import string
 
-
-global folderPath
-
 #################  Main  #################
 def main():
-    logging.info("Initialisation started")
+    logging.info("M - Initialisation started")
     mainfolderPath = os.getcwd()
     cf=get_config_file()
     inputFolderPath = check_input_folder(cf.get("Settings", "inputFolder"),mainfolderPath)
     check_excel_files(inputFolderPath)
     updatedFileList=ensure_unique_xlsx_names(inputFolderPath)
-    hashFiles=check_file_hash(updatedFileList)
- # comment out if not going to use
-    logging.info("Initialisation finished successfully")
-    return mainfolderPath,cf
+    hashDict=check_file_hash(updatedFileList)
+    logging.info("M - Initialisation finished successfully")
+    return mainfolderPath,cf,hashDict,updatedFileList
 
 
 #################  Methods  #################
@@ -94,7 +90,7 @@ def check_file_hash(fileList):
     #    logging.log(logging.CRITICAL,"Program aborted")
     #    sys.exit()
     logging.info("No repeating hashes found")
-    return [v for v in hash_dict.values()]
+    return list(hash_dict)
 
 def ensure_unique_xlsx_names(folder_path): ## should be ok for 36^8 files = 2.8e+13 files
     changed=False # switch to see if any files have been changed

@@ -33,7 +33,8 @@ def main(inputFolder,  configFile,xlList):
     logging.info("M - Data import finished successfully")
     return None
 
-
+def practice_ahp():
+    return -1
 
 
 def number_of_comparisions(n):
@@ -60,7 +61,7 @@ def start_import(pathList, worksheetList, comparisonColumn, startingRow,subCompy
 
     verticalAdd= pd.concat(wList,axis=0) #join all dataframes vertically
     print(get_krippendorff_DF(verticalAdd))
-    #print(get_krippendorff_DF(pd.concat(lList,axis=0)))
+    print(get_krippendorff_DF(pd.concat(lList,axis=0)))
 
 def get_levels_and_weightings(pathList, worksheetList, levelColumn, weightColumn, startingRow, subCompyList, comparisonLevelGap):
     logging.info("Level and weight import started")

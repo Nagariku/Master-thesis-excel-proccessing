@@ -1,4 +1,4 @@
-import data_processing, data_import, data_validation, initialisation, report_generator
+import data_processing, data_validation, initialisation, report_generator
 
 
 mainFolderPath,configFileMain = initialisation.main()

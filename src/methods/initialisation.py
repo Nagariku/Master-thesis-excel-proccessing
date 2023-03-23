@@ -81,7 +81,7 @@ def check_file_hash(fileList):
             file_name = os.path.basename(file_path)
             duplicate_file_name = os.path.basename(hash_dict[file_hash])
             error_msg = f"Error: '{file_name}' has the same hash as '{duplicate_file_name}'"
-            logging.error(error_msg)
+            logging.error(error_msg) #######Error thrown, but does nothing
             error=True
             
         else:

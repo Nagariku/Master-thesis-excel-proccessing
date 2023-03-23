@@ -1,4 +1,4 @@
-from src.methods import data_processing, data_import, data_validation, initialisation, report_generator,data_import_scratch
+from src.methods import data_processing, data_validation, initialisation, report_generator,data_import_scratch
 import time #to remove possibly as log time is enough
 import logging
 

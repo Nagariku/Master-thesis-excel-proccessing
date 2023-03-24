@@ -38,3 +38,7 @@ mask = (firstMat == 0) | np.isinf(firstMat)
 np.copyto(firstMat, reciprocal_matrix, where=mask)
 np.fill_diagonal(firstMat, 1)
 print(firstMat)
+
+import numpy as np
+
+

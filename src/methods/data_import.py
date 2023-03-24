@@ -58,7 +58,7 @@ def start_import(pathList, worksheetList, comparisonColumn, startingRow,subCompy
 
     verticalAdd= pd.concat(wList,axis=0) #join all dataframes vertically
     print(get_krippendorff_DF(verticalAdd))
-    print(get_krippendorff_DF(pd.concat(lList,axis=0)))
+    #print(get_krippendorff_DF(pd.concat(lList,axis=0)))
     return wList[0].iloc[:,0]
 
 def get_levels_and_weightings(pathList, worksheetList, levelColumn, weightColumn, startingRow, subCompyList, comparisonLevelGap):
@@ -86,10 +86,13 @@ def get_levels_and_weightings(pathList, worksheetList, levelColumn, weightColumn
 def get_krippendorff_DF(inDataFrame):
     data = inDataFrame.T.values.tolist()
     data_tuple = tuple(' '.join(map(str, row)) for row in data)
-    newlistconvert =[[np.nan if (v == "*" or v=="N/A") else v for v in coder.split()] for coder in data_tuple]
-    return (krippendorff.alpha(reliability_data=newlistconvert,level_of_measurement="nominal"))
+    if len(data_tuple) == 1:
+        return 1 #if only one coder, return 1
+    else:
+        newlistconvert =[[np.nan if (v == "*" or v=="N/A") else v for v in coder.split()] for coder in data_tuple]
+        return (krippendorff.alpha(reliability_data=newlistconvert,level_of_measurement="nominal"))
      
-def generate_AHP(nOriginal): 
+def generate_AHP(nOriginal):  #generate AHP
     my_list = []
     median=(nOriginal-1)/2
     for i in range(1, nOriginal+1):
@@ -100,8 +103,8 @@ def generate_AHP(nOriginal):
     my_list = [round(x, 4) for x in my_list]
     my_list.sort()
     return my_list
-
-def simplify_krip(nWanted):
+ 
+def simplify_krip(nWanted): #simplify krippendorff alpha
     my_list=generate_AHP(17) ###important! AHP
     my_wantedList=generate_AHP(nWanted)
     median = my_list[int(len(my_list)/2)]
@@ -118,7 +121,7 @@ def simplify_krip(nWanted):
     odd_groups.sort()
     return my_wantedList,odd_groups
     
-def replace_with_lists(num,odd_groups,my_wantedList):
+def replace_with_lists(num,odd_groups,my_wantedList): #replace with lists
     for sublist in odd_groups:
         if num in sublist:
             return my_wantedList[odd_groups.index(sublist)]

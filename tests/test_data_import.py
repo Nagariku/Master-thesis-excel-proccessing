@@ -1,3 +1,3 @@
-from src.methods import data_processing, data_validation, initialisation, report_generator, data_import_scratch
+from src.methods import data_processing, data_validation, initialisation, report_generator
 
 #def test_

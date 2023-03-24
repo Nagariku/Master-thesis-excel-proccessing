@@ -1,4 +1,4 @@
-from src.methods import data_processing, data_validation, initialisation, report_generator,data_import_scratch
+from src.methods import data_processing, data_validation, initialisation, report_generator, data_import
 import time #to remove possibly as log time is enough
 import logging
 
@@ -9,8 +9,8 @@ def main():
     start_time = time.time()
 
     mainFolderPath,configFileMain,hashL, xlsxList = initialisation.main()
-    data_import_scratch.main(mainFolderPath,configFileMain, xlsxList)
-
+    testVar=data_import.main(mainFolderPath,configFileMain, xlsxList)
+    data_processing.main(testVar)
     #dontforget to use hashList
 
     logging.info("Program ended")

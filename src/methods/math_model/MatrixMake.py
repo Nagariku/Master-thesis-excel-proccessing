@@ -5,6 +5,7 @@ def inverse_number_of_comparisons(output):
     return int((1 + np.sqrt(1 + 8*output)) / 2)
 
 def fill_matrix(data):
+    data = np.ravel(data.values)
     n = inverse_number_of_comparisons(len(data))
     sum = 0
     matrix = np.zeros((n, n))
@@ -23,22 +24,23 @@ def fill_matrix(data):
             matrix[i, i+1:n]=data[sum:nextSum]
             sum=nextSum
 
+def do_rest_of_matrix(matrix):
+    matrix = np.where(matrix == 0, 1e-6, matrix)
+    reciprocal_matrix = np.reciprocal(matrix.T)
+    mask = (matrix == 1e-6) | np.isinf(matrix)
+    np.copyto(matrix, reciprocal_matrix, where=mask)
+    np.fill_diagonal(matrix, 1)
+    return matrix
 
 
 
-data = pd.DataFrame({'a': [3,0.5,0.5,1,0.5,0.25,0.25,0.25,0.25,0.3333,2,0.5,3,2,0.3333]})
-data = np.ravel(data.values)
 
-firstMat=fill_matrix(data)
-reciprocal_matrix = np.reciprocal(firstMat.T)
 
-mask = (firstMat == 0) | np.isinf(firstMat)
+def main(data):
+    matrix = fill_matrix(data)
+    matrix = do_rest_of_matrix(matrix)
+    return matrix
 
-# use numpy.copyto() to overwrite the masked values in matrix1 with the corresponding values from matrix2
-np.copyto(firstMat, reciprocal_matrix, where=mask)
-np.fill_diagonal(firstMat, 1)
-print(firstMat)
 
-import numpy as np
 
 

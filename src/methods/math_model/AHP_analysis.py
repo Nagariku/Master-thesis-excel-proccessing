@@ -7,11 +7,6 @@ def ahp(matrix,ri):
     consistency_measure = []
     for i in range(len(row_avgs)):
         consistency_measure.append( np.dot(matrix[i],row_avgs)/row_avgs[i])
-    Consistency_index= (np.mean(consistency_measure)-len(consistency_measure))/(len(consistency_measure)-1)
-    consistency_ratio=Consistency_index/ri
+    consistency_index= (np.mean(consistency_measure)-len(consistency_measure))/(len(consistency_measure)-1)
+    consistency_ratio=consistency_index/ri
     return row_avgs, consistency_ratio
-
-
-
-
-

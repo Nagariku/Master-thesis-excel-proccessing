@@ -20,10 +20,14 @@ def main(inputFolder,  configFile,xlList):
     sR   = int(configFile.get("Settings", "startingRow"))
     cLG  = int(configFile.get("Settings", "comparisonLevelGap"))
     subCompList = eval(configFile.get("Settings", "numberOfSubComponents"))
+    special_sheets_list = [] #list of special sheets
+
+    for key in configFile['Special_sheets']:
+        special_sheets_list.append(eval(configFile['Special_sheets'][key]))
 
     worksheetList = get_first_X_worksheet_names(xlList[0], len(subCompList))
 
-    x=start_import(xlList, worksheetList, cC, sR,subCompList,cLG,lC)
+    x=start_import(xlList, worksheetList, cC, sR,subCompList,cLG,lC,special_sheets_list)
     #print(x)
 
 
@@ -44,11 +48,11 @@ def get_first_X_worksheet_names(file_path, num_sheets):
     warnings.resetwarnings() #reset warning filter
     return sheet_names
 
-def start_import(pathList, worksheetList, comparisonColumn, startingRow,subCompyList,comparisonLevelGap,levelColumn):
+def start_import(pathList, worksheetList, comparisonColumn, startingRow,subCompyList,comparisonLevelGap,levelColumn,SSList):
     #levelDF = get_levels(pathList, worksheetList, levelColumn, startingRow,subCompyList)
     #weightDF = get_weightings(pathList, worksheetList, comparisonColumn, startingRow,subCompyList,comparisonLevelGap)
 
-    lList,wList = get_levels_and_weightings(pathList, worksheetList, levelColumn, comparisonColumn, startingRow,subCompyList,comparisonLevelGap)
+    lList,wList, dimList, intList = get_data(pathList, worksheetList, levelColumn, comparisonColumn, startingRow,subCompyList,comparisonLevelGap,SSList)
 
     print(get_krippendorff_DF(pd.concat(wList,axis=0)))
     mWL,oG=simplify_krip(3)
@@ -61,10 +65,13 @@ def start_import(pathList, worksheetList, comparisonColumn, startingRow,subCompy
     #print(get_krippendorff_DF(pd.concat(lList,axis=0)))
     return wList[0].iloc[:,0]
 
-def get_levels_and_weightings(pathList, worksheetList, levelColumn, weightColumn, startingRow, subCompyList, comparisonLevelGap):
-    logging.info("Level and weight import started")
+def get_data(pathList, worksheetList, levelColumn, weightColumn, startingRow, subCompyList, comparisonLevelGap,sSL):
+    logging.info("Level and weight and special sheete import started")
+
     levelList = [pd.DataFrame() for _ in range(len(worksheetList))]
     weightList = [pd.DataFrame() for _ in range(len(worksheetList))]
+    dimensionList = []
+    interdimensionalList = []
     
     for filePath in pathList:
         filename = os.path.splitext(os.path.basename(filePath))[0]
@@ -78,10 +85,21 @@ def get_levels_and_weightings(pathList, worksheetList, levelColumn, weightColumn
                 sheet = xl.parse(sheet_name=worksheetList[i], skiprows=startingRow+comparisonLevelGap+subCompyList[i]-3, usecols=weightColumn, nrows=number_of_comparisions(subCompyList[i]), names=[filename])
                 sheet = sheet.applymap(lambda x: round(x, 4))
                 weightList[i] = pd.concat([weightList[i], sheet], axis=1)
+
+        sheet = xl.parse(sheet_name=sSL[0][0], skiprows=sSL[0][2]-2, usecols=sSL[0][1], nrows=sSL[0][3]-sSL[0][2]+1, names=[filename])
+        sheet = sheet.applymap(lambda x: round(x, 4))
+        dimensionList.append(sheet)
+
+        sheet = xl.parse(sheet_name=sSL[1][0], skiprows=sSL[1][2]-2, usecols=sSL[1][1], nrows=sSL[1][3]-sSL[1][2]+1, names=[filename])
+        sheet = sheet.fillna(0)
+        sheet = sheet.applymap(lambda x: round(x, 4))
+        interdimensionalList.append(sheet)
         xl.close()
 
-    logging.info("Level and weight import finished successfully")
-    return levelList, weightList
+    
+    print(interdimensionalList)
+    logging.info("Level and weight and special sheete import finished successfully")
+    return levelList, weightList, dimensionList, interdimensionalList
 
 def get_krippendorff_DF(inDataFrame):
     data = inDataFrame.T.values.tolist()

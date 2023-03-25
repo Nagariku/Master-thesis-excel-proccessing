@@ -35,7 +35,7 @@ def get_config_file():
 
 def check_special_worksheet_length(config_obj): 
     boolCheck = True
-    listOfSpecial = config_obj.items("Special sheets")
+    listOfSpecial = config_obj.items("Special_sheets")
     for key, value in listOfSpecial:
         convertedList = ast.literal_eval(value)
         if ((len(convertedList)-1)%3) != 0:
@@ -95,7 +95,7 @@ def check_file_hash(fileList):
 def ensure_unique_xlsx_names(folder_path): ## should be ok for 36^8 files = 2.8e+13 files
     changed=False # switch to see if any files have been changed
     fileList = os.listdir(folder_path) # get list of files in folder
-    full_path_list = [os.path.join(folder_path, s) for s in fileList if s.endswith('.xlsx')] # get full path of files in folder wiuth .xlsx extension
+    full_path_list = [os.path.join(folder_path, s) for s in os.listdir(folder_path) if s.endswith('.xlsx') and not s.startswith("~$")] # get full path of files in folder wiuth .xlsx extension
  
     for i, file_path in enumerate(full_path_list): # loop through files
         file_name = os.path.splitext(os.path.basename(file_path))[0] # get file name without extension

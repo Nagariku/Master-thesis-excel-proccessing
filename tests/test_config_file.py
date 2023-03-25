@@ -35,7 +35,7 @@ def test_settings_exists():
     assert (config_object.has_section('Settings'))
 
 def test_settings_exists():
-    assert (config_object.has_section('Special sheets'))
+    assert (config_object.has_section('Special_sheets'))
 
 def test_input_folder_exists():
     assert (config_object.get("Settings", "inputFolder"))

@@ -1,4 +1,4 @@
-from src.methods import data_processing, data_validation, initialisation, report_generator, data_import
+from src.methods import data_processing, data_validation, initialisation, data_import
 import time #to remove possibly as log time is enough
 import logging
 
@@ -12,6 +12,9 @@ def main():
     testVar=data_import.main(mainFolderPath,configFileMain, xlsxList)
     data_processing.main(testVar)
     #dontforget to use hashList
+
+    from src.methods import report_generator # to make global variable work
+    report_generator.main(mainFolderPath,configFileMain,hashL,testVar)
 
     logging.info("Program ended")
     logging.info("Program runtime: " + f"{(time.time() - start_time):.2f}" + " seconds")

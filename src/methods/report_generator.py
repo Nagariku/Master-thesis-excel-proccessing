@@ -1,15 +1,25 @@
 import logging
 import os
 import csv
+import sys
 import datetime
+import pandas as pd
+
+from src.methods.data_import import subCompListy
 
 ##############Main function##############
-def main(mFP,cFM):
+def main(mFP,cFM,hashList,testDataframe):
     logging.info("Report generation started")
-    outFolderPath = check_output_folder(cFM.get("Settings", "outputFolder"),mFP)
-    make_csv(outFolderPath)
-    logging.info("Report generation finished successfully")
+    outFolderPath = check_output_folder(cFM.get("Settings", "outputFolder"),mFP) #check if output folder exists
+    listDimension,combinedList=get_subsection(cFM) #get subsections and dimensions from config file
+    sOF=make_folder(outFolderPath,len(hashList)) #returns specific output folder
 
+
+    csv_levels(testDataframe,sOF,combinedList) #generates csv file with levels
+
+
+    logging.info("Report generation finished successfully")
+    return None
 
 
 
@@ -18,8 +28,16 @@ def main(mFP,cFM):
 
 #File that generates the report
 
-#make .csv of results
+def get_subsection(CF):
+    dimList = eval(CF.get("Dimensions","dimensions"))
 
+    combinedList=[]
+
+    for i in range(len(dimList)):
+        for n in range(len(subCompListy[i])):
+            combinedList.append(f"{dimList[i]} - {subCompListy[i][n]}")
+
+    return dimList,combinedList
 #maybe make pdf with graphs
 def check_output_folder(folderName,pathFold): #check if excel survey folder exists
     joinedOutputPath = os.path.join(pathFold,folderName)
@@ -33,18 +51,38 @@ def check_output_folder(folderName,pathFold): #check if excel survey folder exis
 
 def make_header():
     
-    return None
+    return -1
 
-def make_csv(oFP):
-    filepath = os.path.join(oFP, get_current_time() + " - " + get_num_participants() + " participant(s)"+  ".csv")
-    with open(filepath, "w", newline="") as file:
-        writer = csv.writer(file)
-    return None
+def make_folder(oFP,num_participants):
+    folder_name = get_current_time() + " - " + str(num_participants) + " participant(s)"
+    specificOutFolder = os.path.join(oFP, folder_name)
 
-def get_num_participants():
-    #todo: get number of participants from the survey
-    return str(5)
+    if not os.path.exists(os.path.join(oFP, folder_name)):
+        os.makedirs(os.path.join(oFP, folder_name))
+        logging.info("Directory created successfully!")
+    else:
+        logging.info("Directory already exists!")
+        logging.log(logging.CRITICAL, "Program aborted, Program run twice in single second")
+        sys.exit()
+    return specificOutFolder
 
 def get_current_time():
     now = datetime.datetime.now()
     return now.strftime('%Y-%m-%dT%H_%M_%S')
+
+
+##############csv generation##############
+
+def csv_make_weights():
+    return None
+
+
+def csv_levels(df,sOF,combL):
+    verticalAdd= pd.concat(df,axis=0)
+    verticalAdd.index=combL
+
+
+    #newDf = pd.DataFrame(verticalAdd.values, index=combL, columns=verticalAdd.columns)
+    testPath=os.path.join(sOF, "levels.csv")
+    verticalAdd.to_csv(testPath, index=True)
+    return None

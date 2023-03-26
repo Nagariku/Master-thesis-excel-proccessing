@@ -14,20 +14,21 @@ import math
 
 
 def main(inputFolder,  configFile,xlList):
+    global subCompListy
     logging.info("M - Data import started")
     cC   = configFile.get("Settings", "comparisonColumn")[1:-1]
     lC   = configFile.get("Settings", "levelColumn")[1:-1]
     sR   = int(configFile.get("Settings", "startingRow"))
     cLG  = int(configFile.get("Settings", "comparisonLevelGap"))
-    subCompList = eval(configFile.get("Settings", "numberOfSubComponents"))
+    subCompListy, subCompNumList = extract_subdimensions(configFile)
     special_sheets_list = [] #list of special sheets
 
     for key in configFile['Special_sheets']:
         special_sheets_list.append(eval(configFile['Special_sheets'][key]))
 
-    worksheetList = get_first_X_worksheet_names(xlList[0], len(subCompList))
+    worksheetList = get_first_X_worksheet_names(xlList[0], len(subCompNumList))
 
-    x=start_import(xlList, worksheetList, cC, sR,subCompList,cLG,lC,special_sheets_list)
+    x=start_import(xlList, worksheetList, cC, sR,subCompNumList,cLG,lC,special_sheets_list)
     #print(x)
 
 
@@ -54,16 +55,16 @@ def start_import(pathList, worksheetList, comparisonColumn, startingRow,subCompy
 
     lList,wList, dimList, intList = get_data(pathList, worksheetList, levelColumn, comparisonColumn, startingRow,subCompyList,comparisonLevelGap,SSList)
 
-    print(get_krippendorff_DF(pd.concat(wList,axis=0)))
+    #print(get_krippendorff_DF(pd.concat(wList,axis=0)))
     mWL,oG=simplify_krip(3)
     for i, df in enumerate(wList):
         wList[i] = df.applymap(lambda x: replace_with_lists(x, oG, mWL))
 
 
     verticalAdd= pd.concat(wList,axis=0) #join all dataframes vertically
-    print(get_krippendorff_DF(verticalAdd))
+    #print(get_krippendorff_DF(verticalAdd))
     #print(get_krippendorff_DF(pd.concat(lList,axis=0)))
-    return wList[0].iloc[:,0]
+    return lList
 
 def get_data(pathList, worksheetList, levelColumn, weightColumn, startingRow, subCompyList, comparisonLevelGap,sSL):
     logging.info("Level and weight and special sheete import started")
@@ -97,7 +98,7 @@ def get_data(pathList, worksheetList, levelColumn, weightColumn, startingRow, su
         xl.close()
 
     
-    print(interdimensionalList)
+    #print(interdimensionalList)
     logging.info("Level and weight and special sheete import finished successfully")
     return levelList, weightList, dimensionList, interdimensionalList
 
@@ -138,7 +139,15 @@ def simplify_krip(nWanted): #simplify krippendorff alpha
              [odd_numbers_no_median[i:i+num_odd_per_group] for i in range(0, len(odd_numbers_no_median), num_odd_per_group)]
     odd_groups.sort()
     return my_wantedList,odd_groups
-    
+
+def extract_subdimensions(CF):
+    subList = []
+    for option in CF.options('Subcatergories'):
+        value = eval(CF.get('Subcatergories', option))
+        if option != '':
+            subList.append(value)
+    return subList, [len(l) for l in subList]
+
 def replace_with_lists(num,odd_groups,my_wantedList): #replace with lists
     for sublist in odd_groups:
         if num in sublist:

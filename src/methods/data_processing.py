@@ -12,7 +12,7 @@ def main(data):
 
     #data = pd.DataFrame({'a': [3,0.5,0.5,1,0.5,0.25,0.25,0.25,0.25,0.3333,2,0.5,3,2,0.3333]})
     #print(data)
-    matrix = matrix_make(data)
+    #matrix = matrix_make(data)
     #print(ahp(matrix,RI[matrix.shape[0]]))
     logging.info("M - Data processing finished successfully")
     return None

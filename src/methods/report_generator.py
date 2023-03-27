@@ -11,7 +11,7 @@ from src.methods.data_import import subCompListy
 ##############Main function##############
 def main(mFP,cFM,nList,levelListSM,weightListSM, dimensionListSM, 
          interDimensionalListSM, kripSimplifiedListSM, outputDataframeSM, 
-         subDimConsistencyListSM, DimConsistencyListSM,DimWeightListSM):
+         subDimConsistencyListSM,DimWeightListSM):
     logging.info("M - Report generation started")
     outFolderPath = check_output_folder(cFM.get("Settings", "outputFolder"),mFP) #check if output folder exists
     listDimension,combinedList=get_subsection(cFM) #get subsections and dimensions from config file
@@ -23,7 +23,7 @@ def main(mFP,cFM,nList,levelListSM,weightListSM, dimensionListSM,
     csv_dim_inputs_pre(dimensionListSM,sOF) #generates csv file with dimensions inputs
     csv_interdim_comparisions_input(interDimensionalListSM,sOF) #generates csv file with interdimensional comparisions
     csv_calculated_weights(outputDataframeSM,sOF,combinedList,DimWeightListSM,listDimension) #generates csv file with calculated weights
-
+    csv_consistency_indexes(subDimConsistencyListSM,sOF,listDimension) #generates csv file with consistency indexes
 
     logging.info("M - Report generation finished successfully")
     return None
@@ -102,27 +102,22 @@ def csv_kripke_simplified(kSL,sOF): #doesn't work
 
 def csv_calculated_weights(df,sOF,combL,DimWeightListSMFunc,listDimensionFunc):
     data = {}
-
-    # Loop through each array in the list and create a column name and add to the dictionary
     for i, array in enumerate(DimWeightListSMFunc):
-        column_name = 'col' + str(i + 1)  # Create a column name for the array
-        data[column_name] = array       # Add the array to the dictionary with its column name
-
-    # Create a pandas dataframe using the dictionary
+        column_name = 'col' + str(i + 1)  
+        data[column_name] = array       
     dfDimension = pd.DataFrame(data)
     dfDimension.index=listDimensionFunc
-    
-
     df.index=combL
     dfDimension.columns=df.columns
-
-
     finalout = pd.concat([dfDimension,df],axis=0)
     outPath=os.path.join(sOF, "Calculated_weights.csv")
     finalout.to_csv(outPath, index=True)
     return None
 
-def csv_consistency_indexes():
+def csv_consistency_indexes(sDCL,sOF,listDimensionFunc):
+    sDCL.index=listDimensionFunc
+    outPath=os.path.join(sOF, "Consistency_indexes.csv")
+    sDCL.to_csv(outPath, index=True)
     return None
 
 

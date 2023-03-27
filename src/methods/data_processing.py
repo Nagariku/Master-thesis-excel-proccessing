@@ -16,7 +16,7 @@ def main(subInputList,dimInputList):
     #matrix = matrix_make(data)
     #print(ahp(matrix,RI[matrix.shape[0]]))
     subDimListWeights, subDimConsistencyList = process_list_to_usable(subInputList)
-    DimWeightList,DimConsistencyList,colList = process_dataframe_to_usable(dimInputList)
+    DimWeightList,colList = process_dataframe_to_usable(dimInputList)
 
     outputList = multiply_weights(subDimListWeights,DimWeightList)
     outputCalcWeights= convert_to_dataframe(outputList,colList)
@@ -25,9 +25,10 @@ def main(subInputList,dimInputList):
     outputConsistency = convert_to_dataframe(subDimConsistencyList,colList)
     #outputDimConsistency = convert_to_dataframe(DimConsistencyList,colList)
 
+
    
     logging.info("M - Data processing finished successfully")
-    return outputCalcWeights,outputSubDimweights,outputConsistency, DimWeightList,DimConsistencyList
+    return outputCalcWeights,outputConsistency, DimWeightList
 
 
 def process_list_to_usable(uncutList):
@@ -65,7 +66,7 @@ def process_dataframe_to_usable(uncutDataframe):
 
 
 
-    return workingListWeights, workingConsistencyIndexList, columnList
+    return workingListWeights, columnList
 
 def multiply_weights(sudDimWeights, dimWeights):
     finalList=[]

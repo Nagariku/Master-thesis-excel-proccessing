@@ -10,12 +10,12 @@ def main():
 
     mainFolderPath,configFileMain,hashL, xlsxList = initialisation.main()
     levelListM,inputsSubListM, inputsDimListM, inputsInterDimensionalListM, kripSimplifiedListM=data_import.main(mainFolderPath,configFileMain, xlsxList)
-    outputDataframeMain, subDimConsistencyListMain, DimConsistencyListMain, DimWeightListMain,DimConsistencyListMain=data_processing.main(inputsSubListM, inputsDimListM)
+    outputDataframeMain, DimConsistencyListMain, DimWeightListMain=data_processing.main(inputsSubListM, inputsDimListM)
 
     from src.methods import report_generator # to make global variable work
     report_generator.main(mainFolderPath,configFileMain,len(xlsxList),levelListM,inputsSubListM, inputsDimListM,
                            inputsInterDimensionalListM, kripSimplifiedListM,outputDataframeMain, 
-                           subDimConsistencyListMain, DimConsistencyListMain,DimWeightListMain)
+                            DimConsistencyListMain,DimWeightListMain)
 
     logging.info("Program ended")
     logging.info("Program runtime: " + f"{(time.time() - start_time):.2f}" + " seconds")

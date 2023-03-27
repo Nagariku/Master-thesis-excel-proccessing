@@ -8,16 +8,16 @@ import pandas as pd
 from src.methods.data_import import subCompListy
 
 ##############Main function##############
-def main(mFP,cFM,hashList,testDataframe):
+def main(mFP,cFM,nList,levelListSM,weightListSM, dimensionListSM, interDimensionalListSM, kripSimplifiedListSM):
     logging.info("Report generation started")
     outFolderPath = check_output_folder(cFM.get("Settings", "outputFolder"),mFP) #check if output folder exists
     listDimension,combinedList=get_subsection(cFM) #get subsections and dimensions from config file
-    sOF=make_folder(outFolderPath,len(hashList)) #returns specific output folder
+    sOF=make_folder(outFolderPath,nList) #returns specific output folder
 
 
-    csv_levels(testDataframe,sOF,combinedList) #generates csv file with levels
-
-
+    csv_levels(levelListSM,sOF,combinedList) #generates csv file with levels
+    csv_sub_inputs_pre(weightListSM,sOF) #generates csv file with subdimension inputs
+    csv_dim_inputs_pre(dimensionListSM,sOF) #generates csv file with dimensions inputs
     logging.info("Report generation finished successfully")
     return None
 
@@ -73,16 +73,20 @@ def get_current_time():
 
 ##############csv generation##############
 
-def csv_make_weights():
+def csv_sub_inputs_pre(wL,sOF):
+    verticalAdd= pd.concat(wL,axis=0)
+    outPath=os.path.join(sOF, "inputs_subdimensions_pre_transf.csv")
+    verticalAdd.to_csv(outPath, index=True)
     return None
 
+def csv_dim_inputs_pre(dL,sOF):
+    outPath=os.path.join(sOF, "inputs_dimensions_pre_transf.csv")
+    dL.to_csv(outPath, index=True)
+    return None
 
 def csv_levels(df,sOF,combL):
     verticalAdd= pd.concat(df,axis=0)
     verticalAdd.index=combL
-
-
-    #newDf = pd.DataFrame(verticalAdd.values, index=combL, columns=verticalAdd.columns)
-    testPath=os.path.join(sOF, "levels.csv")
-    verticalAdd.to_csv(testPath, index=True)
+    outPath=os.path.join(sOF, "levels.csv")
+    verticalAdd.to_csv(outPath, index=True)
     return None

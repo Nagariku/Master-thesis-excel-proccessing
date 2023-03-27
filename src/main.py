@@ -9,12 +9,12 @@ def main():
     start_time = time.time()
 
     mainFolderPath,configFileMain,hashL, xlsxList = initialisation.main()
-    testVar=data_import.main(mainFolderPath,configFileMain, xlsxList)
-    data_processing.main(testVar)
+    levelListM,weightListM, dimensionListM, interDimensionalListM, kripSimplifiedListM=data_import.main(mainFolderPath,configFileMain, xlsxList)
+    #data_processing.main(testVar)
     #dontforget to use hashList
 
     from src.methods import report_generator # to make global variable work
-    report_generator.main(mainFolderPath,configFileMain,hashL,testVar)
+    report_generator.main(mainFolderPath,configFileMain,len(xlsxList),levelListM,weightListM, dimensionListM, interDimensionalListM, kripSimplifiedListM)
 
     logging.info("Program ended")
     logging.info("Program runtime: " + f"{(time.time() - start_time):.2f}" + " seconds")

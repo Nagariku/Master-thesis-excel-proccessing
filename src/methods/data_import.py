@@ -28,15 +28,13 @@ def main(inputFolder,  configFile,xlList):
 
     worksheetList = get_first_X_worksheet_names(xlList[0], len(subCompNumList))
 
-    x=start_import(xlList, worksheetList, cC, sR,subCompNumList,cLG,lC,special_sheets_list)
+    levelList,weightList, dimensionList, interDimensionalList, kripSimplifiedList=start_import(xlList, worksheetList,
+                                                                                                cC, sR,subCompNumList,cLG,lC,special_sheets_list)
     #print(x)
 
 
-
- 
-
     logging.info("M - Data import finished successfully")
-    return x
+    return levelList,weightList, dimensionList, interDimensionalList, kripSimplifiedList
 
 
 def number_of_comparisions(n):
@@ -53,25 +51,42 @@ def start_import(pathList, worksheetList, comparisonColumn, startingRow,subCompy
     #levelDF = get_levels(pathList, worksheetList, levelColumn, startingRow,subCompyList)
     #weightDF = get_weightings(pathList, worksheetList, comparisonColumn, startingRow,subCompyList,comparisonLevelGap)
 
-    lList,wList, dimList, intList = get_data(pathList, worksheetList, levelColumn, comparisonColumn, startingRow,subCompyList,comparisonLevelGap,SSList)
+    lList,wList, dimList, intDimList = get_data(pathList, worksheetList, levelColumn, comparisonColumn, startingRow,subCompyList,comparisonLevelGap,SSList)
 
     #print(get_krippendorff_DF(pd.concat(wList,axis=0)))
-    mWL,oG=simplify_krip(3)
-    for i, df in enumerate(wList):
-        wList[i] = df.applymap(lambda x: replace_with_lists(x, oG, mWL))
+    kripSimpleList = []
 
+    """
+    for num in [15,13,11,9, 7, 5, 3]:
+        mWL, oG = simplify_krip(num)
+        for i, df in enumerate(wList):
+            wList[i] = df.applymap(lambda x: replace_with_lists(x, oG, mWL))
+        kripSimpleList.append(wList.copy())
 
-    verticalAdd= pd.concat(wList,axis=0) #join all dataframes vertically
+    concatKripSimpleList = concat_dataframes(kripSimpleList)
+    resultKripSimpleList = []
+    for df in concatKripSimpleList:
+        resultKripSimpleList.append(get_krippendorff_DF(df))
+
+    print (resultKripSimpleList)
+    """
+    #verticalAdd= pd.concat(wList,axis=0) #join all dataframes vertically
     #print(get_krippendorff_DF(verticalAdd))
     #print(get_krippendorff_DF(pd.concat(lList,axis=0)))
-    return lList
+    return lList , wList, dimList, intDimList, kripSimpleList
+
+def concat_dataframes(list_of_lists):
+    concatenated_dfs = []
+    for dfs in list_of_lists:
+        concatenated_dfs.append(pd.concat(dfs))
+    return concatenated_dfs
 
 def get_data(pathList, worksheetList, levelColumn, weightColumn, startingRow, subCompyList, comparisonLevelGap,sSL):
     logging.info("Level and weight and special sheete import started")
 
     levelList = [pd.DataFrame() for _ in range(len(worksheetList))]
     weightList = [pd.DataFrame() for _ in range(len(worksheetList))]
-    dimensionList = []
+    dimensionList = pd.DataFrame() 
     interdimensionalList = []
     
     for filePath in pathList:
@@ -89,7 +104,8 @@ def get_data(pathList, worksheetList, levelColumn, weightColumn, startingRow, su
 
         sheet = xl.parse(sheet_name=sSL[0][0], skiprows=sSL[0][2]-2, usecols=sSL[0][1], nrows=sSL[0][3]-sSL[0][2]+1, names=[filename])
         sheet = sheet.applymap(lambda x: round(x, 4))
-        dimensionList.append(sheet)
+        dimensionList = pd.concat([dimensionList, sheet], axis=1)
+        #dimensionList.append(sheet)
 
         sheet = xl.parse(sheet_name=sSL[1][0], skiprows=sSL[1][2]-2, usecols=sSL[1][1], nrows=sSL[1][3]-sSL[1][2]+1, names=[filename])
         sheet = sheet.fillna(0)

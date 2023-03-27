@@ -1,4 +1,4 @@
-from src.methods import data_processing, data_validation, initialisation, data_import
+from src.methods import data_processing, initialisation, data_import
 import time #to remove possibly as log time is enough
 import logging
 
@@ -9,12 +9,13 @@ def main():
     start_time = time.time()
 
     mainFolderPath,configFileMain,hashL, xlsxList = initialisation.main()
-    levelListM,weightListM, dimensionListM, interDimensionalListM, kripSimplifiedListM=data_import.main(mainFolderPath,configFileMain, xlsxList)
-    #data_processing.main(testVar)
-    #dontforget to use hashList
+    levelListM,inputsSubListM, inputsDimListM, inputsInterDimensionalListM, kripSimplifiedListM=data_import.main(mainFolderPath,configFileMain, xlsxList)
+    outputDataframeMain, subDimConsistencyListMain, DimConsistencyListMain, DimWeightListMain,DimConsistencyListMain=data_processing.main(inputsSubListM, inputsDimListM)
 
     from src.methods import report_generator # to make global variable work
-    report_generator.main(mainFolderPath,configFileMain,len(xlsxList),levelListM,weightListM, dimensionListM, interDimensionalListM, kripSimplifiedListM)
+    report_generator.main(mainFolderPath,configFileMain,len(xlsxList),levelListM,inputsSubListM, inputsDimListM,
+                           inputsInterDimensionalListM, kripSimplifiedListM,outputDataframeMain, 
+                           subDimConsistencyListMain, DimConsistencyListMain,DimWeightListMain)
 
     logging.info("Program ended")
     logging.info("Program runtime: " + f"{(time.time() - start_time):.2f}" + " seconds")

@@ -12,7 +12,6 @@ def test_program_files_present():
     assert os.path.isfile(os.path.join ("src","methods","initialisation.py"))
     assert os.path.isfile(os.path.join ("src","methods","data_processing.py"))
     assert os.path.isfile(os.path.join ("src","methods","report_generator.py"))
-    assert os.path.isfile(os.path.join ("src","methods","data_validation.py"))
 
 def test_aditional_files_present():
     test_program_files_present()

@@ -4,12 +4,15 @@ import csv
 import sys
 import datetime
 import pandas as pd
+import numpy as np
 
 from src.methods.data_import import subCompListy
 
 ##############Main function##############
-def main(mFP,cFM,nList,levelListSM,weightListSM, dimensionListSM, interDimensionalListSM, kripSimplifiedListSM):
-    logging.info("Report generation started")
+def main(mFP,cFM,nList,levelListSM,weightListSM, dimensionListSM, 
+         interDimensionalListSM, kripSimplifiedListSM, outputDataframeSM, 
+         subDimConsistencyListSM, DimConsistencyListSM,DimWeightListSM):
+    logging.info("M - Report generation started")
     outFolderPath = check_output_folder(cFM.get("Settings", "outputFolder"),mFP) #check if output folder exists
     listDimension,combinedList=get_subsection(cFM) #get subsections and dimensions from config file
     sOF=make_folder(outFolderPath,nList) #returns specific output folder
@@ -18,7 +21,11 @@ def main(mFP,cFM,nList,levelListSM,weightListSM, dimensionListSM, interDimension
     csv_levels(levelListSM,sOF,combinedList) #generates csv file with levels
     csv_sub_inputs_pre(weightListSM,sOF) #generates csv file with subdimension inputs
     csv_dim_inputs_pre(dimensionListSM,sOF) #generates csv file with dimensions inputs
-    logging.info("Report generation finished successfully")
+    csv_interdim_comparisions_input(interDimensionalListSM,sOF) #generates csv file with interdimensional comparisions
+    csv_calculated_weights(outputDataframeSM,sOF,combinedList,DimWeightListSM,listDimension) #generates csv file with calculated weights
+
+
+    logging.info("M - Report generation finished successfully")
     return None
 
 
@@ -49,10 +56,6 @@ def check_output_folder(folderName,pathFold): #check if excel survey folder exis
         logging.info("'" + folderName + "' folder created")
     return joinedOutputPath
 
-def make_header():
-    
-    return -1
-
 def make_folder(oFP,num_participants):
     folder_name = get_current_time() + " - " + str(num_participants) + " participant(s)"
     specificOutFolder = os.path.join(oFP, folder_name)
@@ -75,12 +78,12 @@ def get_current_time():
 
 def csv_sub_inputs_pre(wL,sOF):
     verticalAdd= pd.concat(wL,axis=0)
-    outPath=os.path.join(sOF, "inputs_subdimensions_pre_transf.csv")
+    outPath=os.path.join(sOF, "inputs_subdimensions.csv")
     verticalAdd.to_csv(outPath, index=True)
     return None
 
 def csv_dim_inputs_pre(dL,sOF):
-    outPath=os.path.join(sOF, "inputs_dimensions_pre_transf.csv")
+    outPath=os.path.join(sOF, "inputs_dimensions.csv")
     dL.to_csv(outPath, index=True)
     return None
 
@@ -89,4 +92,44 @@ def csv_levels(df,sOF,combL):
     verticalAdd.index=combL
     outPath=os.path.join(sOF, "levels.csv")
     verticalAdd.to_csv(outPath, index=True)
+    return None
+
+def csv_kripke_simplified(kSL,sOF): #doesn't work
+    verticalAdd= pd.concat(kSL,axis=0)
+    outPath=os.path.join(sOF, "kripke_simplified.csv")
+    verticalAdd.to_csv(outPath, index=True)
+    return None
+
+def csv_calculated_weights(df,sOF,combL,DimWeightListSMFunc,listDimensionFunc):
+    data = {}
+
+    # Loop through each array in the list and create a column name and add to the dictionary
+    for i, array in enumerate(DimWeightListSMFunc):
+        column_name = 'col' + str(i + 1)  # Create a column name for the array
+        data[column_name] = array       # Add the array to the dictionary with its column name
+
+    # Create a pandas dataframe using the dictionary
+    dfDimension = pd.DataFrame(data)
+    dfDimension.index=listDimensionFunc
+    
+
+    df.index=combL
+    dfDimension.columns=df.columns
+
+
+    finalout = pd.concat([dfDimension,df],axis=0)
+    outPath=os.path.join(sOF, "Calculated_weights.csv")
+    finalout.to_csv(outPath, index=True)
+    return None
+
+def csv_consistency_indexes():
+    return None
+
+
+def csv_interdim_comparisions_input(iDL,sOF):
+    outPath=os.path.join(sOF, "inputs_interdimensions.csv")
+    iDL.to_csv(outPath, index=True)
+    return None
+
+def csv_base_math_model():
     return None

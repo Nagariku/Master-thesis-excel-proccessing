@@ -56,20 +56,7 @@ def start_import(pathList, worksheetList, comparisonColumn, startingRow,subCompy
     #print(get_krippendorff_DF(pd.concat(wList,axis=0)))
     kripSimpleList = []
 
-    """
-    for num in [15,13,11,9, 7, 5, 3]:
-        mWL, oG = simplify_krip(num)
-        for i, df in enumerate(wList):
-            wList[i] = df.applymap(lambda x: replace_with_lists(x, oG, mWL))
-        kripSimpleList.append(wList.copy())
 
-    concatKripSimpleList = concat_dataframes(kripSimpleList)
-    resultKripSimpleList = []
-    for df in concatKripSimpleList:
-        resultKripSimpleList.append(get_krippendorff_DF(df))
-
-    print (resultKripSimpleList)
-    """
     #verticalAdd= pd.concat(wList,axis=0) #join all dataframes vertically
     #print(get_krippendorff_DF(verticalAdd))
     #print(get_krippendorff_DF(pd.concat(lList,axis=0)))
@@ -87,7 +74,7 @@ def get_data(pathList, worksheetList, levelColumn, weightColumn, startingRow, su
     levelList = [pd.DataFrame() for _ in range(len(worksheetList))]
     weightList = [pd.DataFrame() for _ in range(len(worksheetList))]
     dimensionList = pd.DataFrame() 
-    interdimensionalList = []
+    interdimensionalList = pd.DataFrame() 
     
     for filePath in pathList:
         filename = os.path.splitext(os.path.basename(filePath))[0]
@@ -105,12 +92,11 @@ def get_data(pathList, worksheetList, levelColumn, weightColumn, startingRow, su
         sheet = xl.parse(sheet_name=sSL[0][0], skiprows=sSL[0][2]-2, usecols=sSL[0][1], nrows=sSL[0][3]-sSL[0][2]+1, names=[filename])
         sheet = sheet.applymap(lambda x: round(x, 4))
         dimensionList = pd.concat([dimensionList, sheet], axis=1)
-        #dimensionList.append(sheet)
 
         sheet = xl.parse(sheet_name=sSL[1][0], skiprows=sSL[1][2]-2, usecols=sSL[1][1], nrows=sSL[1][3]-sSL[1][2]+1, names=[filename])
         sheet = sheet.fillna(0)
         sheet = sheet.applymap(lambda x: round(x, 4))
-        interdimensionalList.append(sheet)
+        interdimensionalList = pd.concat([interdimensionalList,sheet], axis=1)
         xl.close()
 
     

@@ -28,13 +28,13 @@ def main(inputFolder,  configFile,xlList):
 
     worksheetList = get_first_X_worksheet_names(xlList[0], len(subCompNumList))
 
-    levelList,weightList, dimensionList, interDimensionalList, kripSimplifiedList=start_import(xlList, worksheetList,
+    levelList,weightList, dimensionDF, interDimensionalList=start_import(xlList, worksheetList,
                                                                                                 cC, sR,subCompNumList,cLG,lC,special_sheets_list)
-    #print(x)
+    kripSimpleListOut, kripInputListOut = iterate_through_simple_krip(weightList, 17, 3,dimensionDF)
 
 
     logging.info("M - Data import finished successfully")
-    return levelList,weightList, dimensionList, interDimensionalList, kripSimplifiedList
+    return levelList,weightList, dimensionDF, interDimensionalList, kripSimpleListOut, kripInputListOut
 
 
 def number_of_comparisions(n):
@@ -53,14 +53,12 @@ def start_import(pathList, worksheetList, comparisonColumn, startingRow,subCompy
 
     lList,wList, dimList, intDimList = get_data(pathList, worksheetList, levelColumn, comparisonColumn, startingRow,subCompyList,comparisonLevelGap,SSList)
 
-    #print(get_krippendorff_DF(pd.concat(wList,axis=0)))
-    kripSimpleList = []
-
+    
 
     #verticalAdd= pd.concat(wList,axis=0) #join all dataframes vertically
     #print(get_krippendorff_DF(verticalAdd))
     #print(get_krippendorff_DF(pd.concat(lList,axis=0)))
-    return lList , wList, dimList, intDimList, kripSimpleList
+    return lList , wList, dimList, intDimList
 
 def concat_dataframes(list_of_lists):
     concatenated_dfs = []
@@ -155,3 +153,25 @@ def replace_with_lists(num,odd_groups,my_wantedList): #replace with lists
         if num in sublist:
             return my_wantedList[odd_groups.index(sublist)]
     raise ValueError(f"Number {num} not found in any sublist")
+
+def iterate_through_simple_krip(weightList, nMax, nMin,dimDF):
+    kripSimpleList = []
+    kripInputList = []
+
+    for x in range(nMin,nMax+1,2):
+        workInputList=[]
+        workSimpleList=[]
+        mWL,oG=simplify_krip(x)
+        onlyDimensionSImplified=dimDF.applymap(lambda x: replace_with_lists(x, oG, mWL))
+        workInputList.append(onlyDimensionSImplified)
+        workSimpleList.append(get_krippendorff_DF(onlyDimensionSImplified))
+
+        for i,df in enumerate(weightList):
+            dimensionSimplifiedListWork=df.applymap(lambda x: replace_with_lists(x, oG, mWL))
+            workInputList.append(dimensionSimplifiedListWork)
+            workSimpleList.append(get_krippendorff_DF(dimensionSimplifiedListWork))
+
+        kripSimpleList.append(workSimpleList)
+        kripInputList.append(workInputList)
+
+    return kripSimpleList, kripInputList

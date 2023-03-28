@@ -8,14 +8,22 @@ def main():
     logging.info("Program started")
     start_time = time.time()
 
+    #initialisation
     mainFolderPath,configFileMain,hashL, xlsxList = initialisation.main()
-    levelListM,inputsSubListM, inputsDimListM, inputsInterDimensionalListM, kripSimplifiedListM=data_import.main(mainFolderPath,configFileMain, xlsxList)
+
+    #get data
+    levelListM,inputsSubListM, inputsDimListM, inputsInterDimensionalListM, kripSimpleListOutMain, kripInputListOutMain=data_import.main(mainFolderPath,configFileMain, xlsxList)
+
+    #process data
     outputDataframeMain, DimConsistencyListMain, DimWeightListMain=data_processing.main(inputsSubListM, inputsDimListM)
 
+    #report generation
     from src.methods import report_generator # to make global variable work
     report_generator.main(mainFolderPath,configFileMain,len(xlsxList),levelListM,inputsSubListM, inputsDimListM,
-                           inputsInterDimensionalListM, kripSimplifiedListM,outputDataframeMain, 
-                            DimConsistencyListMain,DimWeightListMain)
+                           inputsInterDimensionalListM,outputDataframeMain, 
+                            DimConsistencyListMain,DimWeightListMain,
+                            kripSimpleListOutMain, kripInputListOutMain)
+
 
     logging.info("Program ended")
     logging.info("Program runtime: " + f"{(time.time() - start_time):.2f}" + " seconds")

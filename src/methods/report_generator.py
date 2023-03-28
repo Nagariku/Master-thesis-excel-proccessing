@@ -10,8 +10,9 @@ from src.methods.data_import import subCompListy
 
 ##############Main function##############
 def main(mFP,cFM,nList,levelListSM,weightListSM, dimensionListSM, 
-         interDimensionalListSM, kripSimplifiedListSM, outputDataframeSM, 
-         subDimConsistencyListSM,DimWeightListSM):
+         interDimensionalListSM, outputDataframeSM, 
+         subDimConsistencyListSM,DimWeightListSM,
+         kripSimpleListOut, kripInputListOut):
     logging.info("M - Report generation started")
     outFolderPath = check_output_folder(cFM.get("Settings", "outputFolder"),mFP) #check if output folder exists
     listDimension,combinedList=get_subsection(cFM) #get subsections and dimensions from config file
@@ -24,12 +25,10 @@ def main(mFP,cFM,nList,levelListSM,weightListSM, dimensionListSM,
     csv_interdim_comparisions_input(interDimensionalListSM,sOF) #generates csv file with interdimensional comparisions
     csv_calculated_weights(outputDataframeSM,sOF,combinedList,DimWeightListSM,listDimension) #generates csv file with calculated weights
     csv_consistency_indexes(subDimConsistencyListSM,sOF,listDimension) #generates csv file with consistency indexes
-
+    csv_krip_inputs(kripInputListOut,sOF) #generates csv file with krippendorff inputs
+    csv_krip_outputs(kripSimpleListOut,sOF,listDimension) #generates csv file with krippendorff outputs
     logging.info("M - Report generation finished successfully")
     return None
-
-
-
 
 ##############Sub functions##############
 
@@ -62,7 +61,7 @@ def make_folder(oFP,num_participants):
 
     if not os.path.exists(os.path.join(oFP, folder_name)):
         os.makedirs(os.path.join(oFP, folder_name))
-        logging.info("Directory created successfully!")
+        logging.info("Report folder created successfully!")
     else:
         logging.info("Directory already exists!")
         logging.log(logging.CRITICAL, "Program aborted, Program run twice in single second")
@@ -94,10 +93,15 @@ def csv_levels(df,sOF,combL):
     verticalAdd.to_csv(outPath, index=True)
     return None
 
-def csv_kripke_simplified(kSL,sOF): #doesn't work
-    verticalAdd= pd.concat(kSL,axis=0)
-    outPath=os.path.join(sOF, "kripke_simplified.csv")
-    verticalAdd.to_csv(outPath, index=True)
+def csv_krip_inputs(kripInputListOut,sOF): #from most convoluting to least (aka higher alpha to lower)
+    finalDF = pd.DataFrame()
+    for i in range(len(kripInputListOut)):
+        workingDF = pd.DataFrame()
+        for x in range(len(kripInputListOut[i])):
+            workingDF = pd.concat([workingDF,kripInputListOut[i][x]],axis=0)
+        finalDF = pd.concat([finalDF,workingDF],axis=1)
+    outPath=os.path.join(sOF, "inputs_krip.csv")
+    finalDF.to_csv(outPath, index=True)
     return None
 
 def csv_calculated_weights(df,sOF,combL,DimWeightListSMFunc,listDimensionFunc):
@@ -120,11 +124,23 @@ def csv_consistency_indexes(sDCL,sOF,listDimensionFunc):
     sDCL.to_csv(outPath, index=True)
     return None
 
-
 def csv_interdim_comparisions_input(iDL,sOF):
     outPath=os.path.join(sOF, "inputs_interdimensions.csv")
     iDL.to_csv(outPath, index=True)
     return None
 
-def csv_base_math_model():
+def csv_krip_outputs(kripSimpleListOut, sOF, listDimensionFunc):
+    indexToUse = ["Dimensions"] + listDimensionFunc
+    cols = list(range(3, len(kripSimpleListOut)*2+2, 2)) #list of columns to drop
+    print(cols)
+
+    finalDF = pd.DataFrame()
+    for i in range(len(kripSimpleListOut)):
+        col_name=cols[i]
+        df=pd.DataFrame({col_name: kripSimpleListOut[i]})
+        finalDF=pd.concat([finalDF,df],axis=1)
+
+    finalDF.index=indexToUse
+    outPath=os.path.join(sOF, "outputs_krip.csv")
+    finalDF.to_csv(outPath, index=True)
     return None

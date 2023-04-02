@@ -160,7 +160,6 @@ def iterate_through_simple_krip(weightList,dimDF):
     my_list= [3,5,9,17]
 
     for x in my_list:
-        print("new x")
         workInputList=[]
         workSimpleList=[]
         mWL,oG=simplify_krip(x)
@@ -169,10 +168,7 @@ def iterate_through_simple_krip(weightList,dimDF):
         workSimpleList.append(get_krippendorff_DF(onlyDimensionSImplified)) #dimension
 
         for i,df in enumerate(weightList):
-            print("new weight")
-            print(df)
             dimensionSimplifiedListWork=df.applymap(lambda x: replace_with_lists(x, oG, mWL))
-            print(dimensionSimplifiedListWork)
             workInputList.append(dimensionSimplifiedListWork)
             workSimpleList.append(get_krippendorff_DF(dimensionSimplifiedListWork))
 

@@ -12,7 +12,7 @@ from src.methods.data_import import subCompListy
 def main(mFP,cFM,nList,levelListSM,weightListSM, dimensionListSM, 
          interDimensionalListSM, outputDataframeSM, 
          subDimConsistencyListSM,DimWeightListSM,
-         kripSimpleListOut, kripInputListOut):
+         kripSimpleListOut, kripInputListOut,subDimWeightsListSM):
     logging.info("M - Report generation started")
     outFolderPath = check_output_folder(cFM.get("Settings", "outputFolder"),mFP) #check if output folder exists
     listDimension,combinedList=get_subsection(cFM) #get subsections and dimensions from config file
@@ -27,6 +27,7 @@ def main(mFP,cFM,nList,levelListSM,weightListSM, dimensionListSM,
     csv_consistency_indexes(subDimConsistencyListSM,sOF,listDimension) #generates csv file with consistency indexes
     csv_krip_inputs(kripInputListOut,sOF) #generates csv file with krippendorff inputs
     csv_krip_outputs(kripSimpleListOut,sOF,listDimension) #generates csv file with krippendorff outputs
+    csv_subweights_weights(subDimWeightsListSM,sOF,combinedList,DimWeightListSM,listDimension) #generates csv file with subweights and weights
     logging.info("M - Report generation finished successfully")
     return None
 
@@ -132,7 +133,6 @@ def csv_interdim_comparisions_input(iDL,sOF):
 def csv_krip_outputs(kripSimpleListOut, sOF, listDimensionFunc):
     indexToUse = ["Dimensions"] + listDimensionFunc
     cols = [3, 5, 9, 17] #list of columns to drop
-    print(cols)
 
     finalDF = pd.DataFrame()
     for i in range(len(kripSimpleListOut)):
@@ -143,4 +143,18 @@ def csv_krip_outputs(kripSimpleListOut, sOF, listDimensionFunc):
     finalDF.index=indexToUse
     outPath=os.path.join(sOF, "outputs_krip.csv")
     finalDF.to_csv(outPath, index=True)
+    return None
+
+def csv_subweights_weights(df,sOF,combL,DimWeightListSMFunc,listDimensionFunc):
+    data = {}
+    for i, array in enumerate(DimWeightListSMFunc):
+        column_name = 'col' + str(i + 1)  
+        data[column_name] = array       
+    dfDimension = pd.DataFrame(data)
+    dfDimension.index=listDimensionFunc
+    df.index=combL
+    dfDimension.columns=df.columns
+    finalout = pd.concat([dfDimension,df],axis=0)
+    outPath=os.path.join(sOF, "weights_of_dim_and_sub.csv")
+    finalout.to_csv(outPath, index=True)
     return None

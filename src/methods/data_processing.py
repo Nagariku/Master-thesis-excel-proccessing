@@ -19,6 +19,7 @@ def main(subInputList,dimInputList):
     DimWeightList,colList = process_dataframe_to_usable(dimInputList)
 
     outputList = multiply_weights(subDimListWeights,DimWeightList)
+    subDimListWeightsDF = convert_to_dataframe(subDimListWeights,colList)
     outputCalcWeights= convert_to_dataframe(outputList,colList)
     #outputDimWeights = convert_to_dataframe(DimWeightList,colList)
     outputSubDimweights = convert_to_dataframe(subDimListWeights,colList)
@@ -28,7 +29,7 @@ def main(subInputList,dimInputList):
 
    
     logging.info("M - Data processing finished successfully")
-    return outputCalcWeights,outputConsistency, DimWeightList
+    return outputCalcWeights,outputConsistency, DimWeightList,subDimListWeightsDF
 
 
 def process_list_to_usable(uncutList):

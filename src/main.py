@@ -15,14 +15,14 @@ def main():
     levelListM,inputsSubListM, inputsDimListM, inputsInterDimensionalListM, kripSimpleListOutMain, kripInputListOutMain=data_import.main(mainFolderPath,configFileMain, xlsxList)
 
     #process data
-    outputDataframeMain, DimConsistencyListMain, DimWeightListMain=data_processing.main(inputsSubListM, inputsDimListM)
+    outputDataframeMain, DimConsistencyListMain, DimWeightListMain,subDimListWeightsDFMain=data_processing.main(inputsSubListM, inputsDimListM)
 
     #report generation
     from src.methods import report_generator # to make global variable work
     report_generator.main(mainFolderPath,configFileMain,len(xlsxList),levelListM,inputsSubListM, inputsDimListM,
                            inputsInterDimensionalListM,outputDataframeMain, 
                             DimConsistencyListMain,DimWeightListMain,
-                            kripSimpleListOutMain, kripInputListOutMain)
+                            kripSimpleListOutMain, kripInputListOutMain,subDimListWeightsDFMain)
 
 
     logging.info("Program ended")

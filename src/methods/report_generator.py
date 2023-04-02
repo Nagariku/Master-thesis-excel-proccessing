@@ -131,7 +131,7 @@ def csv_interdim_comparisions_input(iDL,sOF):
 
 def csv_krip_outputs(kripSimpleListOut, sOF, listDimensionFunc):
     indexToUse = ["Dimensions"] + listDimensionFunc
-    cols = list(range(3, len(kripSimpleListOut)*2+2, 2)) #list of columns to drop
+    cols = [3, 5, 9, 17] #list of columns to drop
     print(cols)
 
     finalDF = pd.DataFrame()

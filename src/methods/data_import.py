@@ -30,7 +30,7 @@ def main(inputFolder,  configFile,xlList):
 
     levelList,weightList, dimensionDF, interDimensionalList=start_import(xlList, worksheetList,
                                                                                                 cC, sR,subCompNumList,cLG,lC,special_sheets_list)
-    kripSimpleListOut, kripInputListOut = iterate_through_simple_krip(weightList, 17, 3,dimensionDF)
+    kripSimpleListOut, kripInputListOut = iterate_through_simple_krip(weightList,dimensionDF)
 
 
     logging.info("M - Data import finished successfully")
@@ -154,24 +154,30 @@ def replace_with_lists(num,odd_groups,my_wantedList): #replace with lists
             return my_wantedList[odd_groups.index(sublist)]
     raise ValueError(f"Number {num} not found in any sublist")
 
-def iterate_through_simple_krip(weightList, nMax, nMin,dimDF):
+def iterate_through_simple_krip(weightList,dimDF):
     kripSimpleList = []
     kripInputList = []
+    my_list= [3,5,9,17]
 
-    for x in range(nMin,nMax+1,2):
+    for x in my_list:
+        print("new x")
         workInputList=[]
         workSimpleList=[]
         mWL,oG=simplify_krip(x)
         onlyDimensionSImplified=dimDF.applymap(lambda x: replace_with_lists(x, oG, mWL))
-        workInputList.append(onlyDimensionSImplified)
-        workSimpleList.append(get_krippendorff_DF(onlyDimensionSImplified))
+        workInputList.append(onlyDimensionSImplified) #dimension
+        workSimpleList.append(get_krippendorff_DF(onlyDimensionSImplified)) #dimension
 
         for i,df in enumerate(weightList):
+            print("new weight")
+            print(df)
             dimensionSimplifiedListWork=df.applymap(lambda x: replace_with_lists(x, oG, mWL))
+            print(dimensionSimplifiedListWork)
             workInputList.append(dimensionSimplifiedListWork)
             workSimpleList.append(get_krippendorff_DF(dimensionSimplifiedListWork))
 
         kripSimpleList.append(workSimpleList)
         kripInputList.append(workInputList)
+
 
     return kripSimpleList, kripInputList

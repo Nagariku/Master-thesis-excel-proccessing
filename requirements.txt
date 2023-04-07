@@ -1,6 +1,5 @@
-ipython
-pandas
-pytest
-xlrd==1.2.0
+krippendorff==0.6.0
+numpy==1.24.0
 openpyxl==3.0.10
-krippendorff
+pandas==1.5.2
+pytest==7.2.2

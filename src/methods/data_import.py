@@ -67,7 +67,7 @@ def concat_dataframes(list_of_lists):
     return concatenated_dfs
 
 def get_data(pathList, worksheetList, levelColumn, weightColumn, startingRow, subCompyList, comparisonLevelGap,sSL):
-    logging.info("Level and weight and special sheete import started")
+    logging.info("Level and weight and special sheet import started")
 
     levelList = [pd.DataFrame() for _ in range(len(worksheetList))]
     weightList = [pd.DataFrame() for _ in range(len(worksheetList))]
@@ -99,7 +99,7 @@ def get_data(pathList, worksheetList, levelColumn, weightColumn, startingRow, su
 
     
     #print(interdimensionalList)
-    logging.info("Level and weight and special sheete import finished successfully")
+    logging.info("Level and weight and special sheet import finished successfully")
     return levelList, weightList, dimensionList, interdimensionalList
 
 def get_krippendorff_DF(inDataFrame):
@@ -155,6 +155,7 @@ def replace_with_lists(num,odd_groups,my_wantedList): #replace with lists
     raise ValueError(f"Number {num} not found in any sublist")
 
 def iterate_through_simple_krip(weightList,dimDF):
+    logging.info("Krippendorff simplified alpha calculation started")
     kripSimpleList = []
     kripInputList = []
     my_list= [3,5,9,17]
@@ -175,5 +176,5 @@ def iterate_through_simple_krip(weightList,dimDF):
         kripSimpleList.append(workSimpleList)
         kripInputList.append(workInputList)
 
-
+    logging.info("Krippendorff simplified alpha calculation finished successfully")
     return kripSimpleList, kripInputList

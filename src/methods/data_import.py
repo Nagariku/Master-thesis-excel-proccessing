@@ -108,8 +108,16 @@ def get_krippendorff_DF(inDataFrame):
     if len(data_tuple) == 1:
         return 1 #if only one coder, return 1
     else:
-        newlistconvert =[[np.nan if (v == "*" or v=="N/A") else v for v in coder.split()] for coder in data_tuple]
-        return (krippendorff.alpha(reliability_data=newlistconvert,level_of_measurement="nominal"))
+        newlistconvert = [[round(-(1/float(val))+2, 4) if isinstance(val, (int, float)) and float(val) < 1 else round(float(val), 4)
+                           if val != "*" and val != "N/A" else np.nan for val in coder.split()] for coder in data_tuple] 
+                            #convert into continous scale, instead of 0.25 and so on
+
+
+        unique_values = list(set([val for sublist in newlistconvert for val in sublist]))
+        unique_values.sort()
+
+        
+        return (krippendorff.alpha(reliability_data=newlistconvert, level_of_measurement="interval")) # value_domain=unique_values
      
 def generate_AHP(nOriginal):  #generate AHP
     my_list = []

@@ -19,7 +19,7 @@ def main(mFP,cFM,nList,levelListSM,weightListSM, dimensionListSM,
     sOF=make_folder(outFolderPath,nList) #returns specific output folder
 
 
-    csv_levels(levelListSM,sOF,combinedList) #generates csv file with levels
+    csv_input_levels(levelListSM,sOF,combinedList) #generates csv file with inputted levels
     csv_sub_inputs_pre(weightListSM,sOF) #generates csv file with subdimension inputs
     csv_dim_inputs_pre(dimensionListSM,sOF) #generates csv file with dimensions inputs
     csv_interdim_comparisions_input(interDimensionalListSM,sOF) #generates csv file with interdimensional comparisions
@@ -78,19 +78,19 @@ def get_current_time():
 
 def csv_sub_inputs_pre(wL,sOF):
     verticalAdd= pd.concat(wL,axis=0)
-    outPath=os.path.join(sOF, "inputs_subdimensions.csv")
+    outPath=os.path.join(sOF, "input_subdimension_comparisions.csv")
     verticalAdd.to_csv(outPath, index=True)
     return None
 
 def csv_dim_inputs_pre(dL,sOF):
-    outPath=os.path.join(sOF, "inputs_dimensions.csv")
+    outPath=os.path.join(sOF, "input_dimensions_comparisions.csv")
     dL.to_csv(outPath, index=True)
     return None
 
-def csv_levels(df,sOF,combL):
+def csv_input_levels(df,sOF,combL):
     verticalAdd= pd.concat(df,axis=0)
     verticalAdd.index=combL
-    outPath=os.path.join(sOF, "levels.csv")
+    outPath=os.path.join(sOF, "input_levels.csv")
     verticalAdd.to_csv(outPath, index=True)
     return None
 
@@ -101,7 +101,7 @@ def csv_krip_inputs(kripInputListOut,sOF): #from most convoluting to least (aka 
         for x in range(len(kripInputListOut[i])):
             workingDF = pd.concat([workingDF,kripInputListOut[i][x]],axis=0)
         finalDF = pd.concat([finalDF,workingDF],axis=1)
-    outPath=os.path.join(sOF, "inputs_krip.csv")
+    outPath=os.path.join(sOF, "input_simplified_krip.csv")
     finalDF.to_csv(outPath, index=True)
     return None
 
@@ -115,13 +115,13 @@ def csv_calculated_weights(df,sOF,combL,DimWeightListSMFunc,listDimensionFunc):
     df.index=combL
     dfDimension.columns=df.columns
     finalout = pd.concat([dfDimension,df],axis=0)
-    outPath=os.path.join(sOF, "Calculated_weights.csv")
+    outPath=os.path.join(sOF, "output_normalised_weights.csv")
     finalout.to_csv(outPath, index=True)
     return None
 
 def csv_consistency_indexes(sDCL,sOF,listDimensionFunc):
     sDCL.index=listDimensionFunc
-    outPath=os.path.join(sOF, "Consistency_indexes.csv")
+    outPath=os.path.join(sOF, "output_consistency_indexes.csv")
     sDCL.to_csv(outPath, index=True)
     return None
 
@@ -155,6 +155,6 @@ def csv_subweights_weights(df,sOF,combL,DimWeightListSMFunc,listDimensionFunc):
     df.index=combL
     dfDimension.columns=df.columns
     finalout = pd.concat([dfDimension,df],axis=0)
-    outPath=os.path.join(sOF, "weights_of_dim_and_sub.csv")
+    outPath=os.path.join(sOF, "output_non_normalised_weights.csv")
     finalout.to_csv(outPath, index=True)
     return None

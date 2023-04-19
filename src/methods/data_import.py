@@ -20,13 +20,13 @@ def main(inputFolder,  configFile,xlList):
     lC   = configFile.get("Settings", "levelColumn")[1:-1]
     sR   = int(configFile.get("Settings", "startingRow"))
     cLG  = int(configFile.get("Settings", "comparisonLevelGap"))
-    subCompListy, subCompNumList = extract_subdimensions(configFile)
+    subCompListy, subCompNumList,wsSkip = extract_subdimensions(configFile)
     special_sheets_list = [] #list of special sheets
 
     for key in configFile['Special_sheets']:
         special_sheets_list.append(eval(configFile['Special_sheets'][key]))
 
-    worksheetList = get_first_X_worksheet_names(xlList[0], len(subCompNumList))
+    worksheetList = get_first_X_worksheet_names(xlList[0], len(subCompNumList),wsSkip)
 
     levelList,weightList, dimensionDF, interDimensionalList=start_import(xlList, worksheetList,
                                                                                                 cC, sR,subCompNumList,cLG,lC,special_sheets_list)
@@ -40,10 +40,10 @@ def main(inputFolder,  configFile,xlList):
 def number_of_comparisions(n):
     return 0.5*n*(n-1)
 
-def get_first_X_worksheet_names(file_path, num_sheets):
+def get_first_X_worksheet_names(file_path, num_sheets, x):
     warnings.simplefilter("ignore", category=UserWarning) #ignore warning about openpyxl
     workbook = openpyxl.load_workbook(file_path)
-    sheet_names = workbook.sheetnames[:num_sheets]
+    sheet_names = workbook.sheetnames[x:num_sheets+x]
     warnings.resetwarnings() #reset warning filter
     return sheet_names
 
@@ -154,7 +154,9 @@ def extract_subdimensions(CF):
         value = eval(CF.get('Subcatergories', option))
         if option != '':
             subList.append(value)
-    return subList, [len(l) for l in subList]
+
+    wsSkipped = CF.get('Dimensions', 'worksheetsSkipped')
+    return subList, [len(l) for l in subList],int(wsSkipped)
 
 def replace_with_lists(num,odd_groups,my_wantedList): #replace with lists
     for sublist in odd_groups:

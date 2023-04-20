@@ -83,7 +83,14 @@ def get_data(pathList, worksheetList, levelColumn, weightColumn, startingRow, su
             levelList[i] = pd.concat([levelList[i], sheet], axis=1)
             
             if number_of_comparisions(subCompyList[i]) != 0:
+                print("worksheet "+ worksheetList[i])
+                quickcalc=startingRow+comparisonLevelGap+subCompyList[i]-1
+                print("skiprows " + str(quickcalc))
+                print("weightcolumn " +weightColumn)
+                print("num Comparsions "+ str(number_of_comparisions(subCompyList[i])))
+                print(filename)
                 sheet = xl.parse(sheet_name=worksheetList[i], skiprows=startingRow+comparisonLevelGap+subCompyList[i]-3, usecols=weightColumn, nrows=number_of_comparisions(subCompyList[i]), names=[filename])
+                print(sheet)
                 sheet = sheet.applymap(lambda x: round(x, 4))
                 weightList[i] = pd.concat([weightList[i], sheet], axis=1)
 

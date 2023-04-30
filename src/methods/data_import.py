@@ -83,14 +83,7 @@ def get_data(pathList, worksheetList, levelColumn, weightColumn, startingRow, su
             levelList[i] = pd.concat([levelList[i], sheet], axis=1)
             
             if number_of_comparisions(subCompyList[i]) != 0:
-                print("worksheet "+ worksheetList[i])
-                quickcalc=startingRow+comparisonLevelGap+subCompyList[i]-1
-                print("skiprows " + str(quickcalc))
-                print("weightcolumn " +weightColumn)
-                print("num Comparsions "+ str(number_of_comparisions(subCompyList[i])))
-                print(filename)
                 sheet = xl.parse(sheet_name=worksheetList[i], skiprows=startingRow+comparisonLevelGap+subCompyList[i]-3, usecols=weightColumn, nrows=number_of_comparisions(subCompyList[i]), names=[filename])
-                print(sheet)
                 sheet = sheet.applymap(lambda x: round(x, 4))
                 weightList[i] = pd.concat([weightList[i], sheet], axis=1)
 
@@ -124,7 +117,7 @@ def get_krippendorff_DF(inDataFrame):
         unique_values.sort()
 
         
-        return (krippendorff.alpha(reliability_data=newlistconvert, level_of_measurement="interval")) # value_domain=unique_values
+        return (krippendorff.alpha(reliability_data=newlistconvert, level_of_measurement="nominal")) # value_domain=unique_values
      
 def generate_AHP(nOriginal):  #generate AHP
     my_list = []
@@ -176,6 +169,7 @@ def iterate_through_simple_krip(weightList,dimDF):
     kripSimpleList = []
     kripInputList = []
     my_list= [3,5,9,17]
+
 
     for x in my_list:
         workInputList=[]

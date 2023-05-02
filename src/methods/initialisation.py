@@ -86,9 +86,6 @@ def check_file_hash(fileList):
             
         else:
             hash_dict[file_hash] = file_path
-    #if error:
-    #    logging.log(logging.CRITICAL,"Program aborted")
-    #    sys.exit()
     logging.info("No repeating hashes found")
     return list(hash_dict)
 

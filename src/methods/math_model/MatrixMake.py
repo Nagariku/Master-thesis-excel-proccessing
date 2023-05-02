@@ -32,10 +32,6 @@ def do_rest_of_matrix(matrix):
     np.fill_diagonal(matrix, 1)
     return matrix
 
-
-
-
-
 def main(data):
     matrix = fill_matrix(data)
     matrix = do_rest_of_matrix(matrix)

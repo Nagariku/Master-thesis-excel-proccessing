@@ -17,23 +17,16 @@ config_object.read(config_file)
 def generate_unique_xlsx_files(folder_path, n): ## generate n unique xlsx files in a folder and return their hashes
     hash_files = []
     for i in range(n):
-        # Generate a random 8-character string for the filename
         file_name = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
-
-        # Check if the file name is already used
         while os.path.exists(os.path.join(folder_path, file_name + '.xlsx')):
             file_name = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
-
-        # Create the full file path
         file_path = os.path.join(folder_path, file_name + '.xlsx')
-
-        # Create the Excel file with a unique hash
         wb = Workbook()
         ws = wb.active
         random_string = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=20))
-        ws["A1"] = random_string
+        ws["A1"] = random_string # type: ignore
         wb.save(file_path)
-        
+    
         with open(file_path, "rb") as f:
             original_file_hash = hashlib.md5(f.read()).hexdigest()
             hash_files.append(original_file_hash)

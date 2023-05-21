@@ -106,7 +106,7 @@ def get_krippendorff_DF(inDataFrame):
         unique_values.sort()
 
         
-        return (krippendorff.alpha(reliability_data=newlistconvert, level_of_measurement="nominal")) # value_domain=unique_values
+        return (krippendorff.alpha(reliability_data=newlistconvert, level_of_measurement="ordinal",value_domain=unique_values))  #calculate krippendorff alpha
      
 def generate_AHP(nOriginal):  #generate AHP
     my_list = []
